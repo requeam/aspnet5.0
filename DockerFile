@@ -1,1 +1,16 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
+#更换阿里源
+ADD ["sources.list", "/etc/apt/"]
+#RUN apt-get update 
+#RUN apt-get install -y apt-utils libgdiplus libc6-dev
+#RUN ln -s /usr/lib/libgdiplus.so /usr/lib/gdiplus.dll
+#添加libgdiplus库
+RUN apt-get update -y && apt-get install -y libgdiplus && apt-get clean && ln -s /usr/lib/libgdiplus.so /usr/lib/gdiplus.dll
+RUN apt-get install -y ghostscript
+#字体复制
+ADD ["CIDFont/AdobeHeitiStd-Regular.otf", "/usr/share/ghostscript/9.26/Resource/CIDFont/AdobeHeitiStd-Regular"]
+ADD ["CIDFont/AdobeSongStd-Light.otf", "/usr/share/ghostscript/9.26/Resource/CIDFont/AdobeSongStd-Light"]
+RUN update-gsfontmap
+#修改时区
+RUN rm /etc/localtime 
+RUN ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
